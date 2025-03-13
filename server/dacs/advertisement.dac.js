@@ -3,6 +3,7 @@ class advertisementHandler{
     constructor(){}
     async addAdvertisement(req,res){
         try {
+            console.log('Recieved  : ' , req.body )
             const { name,price,description,startson,endson,postedbyid,statusid,typeid,categoryid,cityid} = req.body;
             const added = await Advertisement.create({
                 name: name,

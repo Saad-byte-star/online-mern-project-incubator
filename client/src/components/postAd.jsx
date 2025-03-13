@@ -9,19 +9,30 @@ function PostAd({ show, handleClose }) {
   const [cityAreas, setCityAreas] = useState([]);
   const [types, setTypes] = useState([]);
 
+  const loginState = useSelector((state) => state.Login);
+  const userId = loginState?.data?.currentuser?._id || ""; // Safe access to avoid errors
+
   // State to hold form data
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     description: "",
     features: "",
-    startsOn: "",
-    endsOn: "",
-    category: "",
-    cityArea: "",
-    type: "",
+    startson: "",
+    endson: "",
+    postedbyid: "", // Initialize empty and update when userId is available
+    categoryid: "",
+    cityareaid: "",
+    typeid: "",
     image: null,
   });
+
+  // Update postedbyid when userId becomes available
+  useEffect(() => {
+    if (userId) {
+      setFormData((prev) => ({ ...prev, postedbyid: userId }));
+    }
+  }, [userId]); // Runs when userId updates
 
   // Fetch data from API
   useEffect(() => {
@@ -50,32 +61,23 @@ function PostAd({ show, handleClose }) {
     fetchData();
   }, []);
 
-  // Handle input change for text fields
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // Universal input change handler
+  const handleInputChange = (e) => {
+    const { name, value, type, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "file" ? files[0] : value,
+    }));
   };
 
-  // Handle dropdown selection
-  const handleSelectChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handle file upload
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
-  };
+  let dispatch = useDispatch();
 
 
-  let dispatch = useDispatch()
-  const { data } = useSelector((state) => state.PostAd);
 
-  // console.log(data);
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    // console.log("Sending data:", formData);
+    e.preventDefault();
+    console.log("Sending data:", formData);
     dispatch(postAd(formData));
     handleClose();
   };
@@ -89,36 +91,36 @@ function PostAd({ show, handleClose }) {
         <Form onSubmit={handleSubmit} className="scrollable-form">
           <Form.Group className="mb-3">
             <Form.Label>Name</Form.Label>
-            <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter name" />
+            <Form.Control type="text" name="name" value={formData.name} onChange={handleInputChange} placeholder="Enter name" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Price</Form.Label>
-            <Form.Control type="text" name="price" value={formData.price} onChange={handleChange} placeholder="Enter price" />
+            <Form.Control type="text" name="price" value={formData.price} onChange={handleInputChange} placeholder="Enter price" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Description</Form.Label>
-            <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} placeholder="Enter description" />
+            <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleInputChange} placeholder="Enter description" />
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>Features</Form.Label>
-            <Form.Control as="textarea" rows={3} name="features" value={formData.features} onChange={handleChange} placeholder="Enter features" />
+            <Form.Control as="textarea" rows={3} name="features" value={formData.features} onChange={handleInputChange} placeholder="Enter features" />
           </Form.Group>
 
           <Row className="mb-3">
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Starts On</Form.Label>
-                <Form.Control type="date" name="startsOn" value={formData.startsOn} onChange={handleChange} />
+                <Form.Control type="date" name="startson" value={formData.startson} onChange={handleInputChange} />
               </Form.Group>
             </Col>
 
             <Col md={6}>
               <Form.Group>
                 <Form.Label>Ends On</Form.Label>
-                <Form.Control type="date" name="endsOn" value={formData.endsOn} onChange={handleChange} />
+                <Form.Control type="date" name="endson" value={formData.endson} onChange={handleInputChange} />
               </Form.Group>
             </Col>
           </Row>
@@ -127,12 +129,10 @@ function PostAd({ show, handleClose }) {
             <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label>Category</Form.Label>
-                <Form.Select name="category" className="bg-success text-white" value={formData.category} onChange={handleSelectChange}>
+                <Form.Select name="categoryid" className="bg-success text-white" value={formData.categoryid} onChange={handleInputChange}>
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
+                    <option key={cat._id} value={cat._id}>{cat.name}</option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -141,12 +141,10 @@ function PostAd({ show, handleClose }) {
             <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label>City Area</Form.Label>
-                <Form.Select name="cityArea" className="bg-success text-white" value={formData.cityArea} onChange={handleSelectChange}>
+                <Form.Select name="cityareaid" className="bg-success text-white" value={formData.cityareaid} onChange={handleInputChange}>
                   <option value="">Select City Area</option>
                   {cityAreas.map((area) => (
-                    <option key={area._id} value={area._id}>
-                      {area.name}
-                    </option>
+                    <option key={area._id} value={area._id}>{area.name}</option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -155,12 +153,10 @@ function PostAd({ show, handleClose }) {
             <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label>Type</Form.Label>
-                <Form.Select name="type" className="bg-success text-white" value={formData.type} onChange={handleSelectChange}>
+                <Form.Select name="typeid" className="bg-success text-white" value={formData.typeid} onChange={handleInputChange}>
                   <option value="">Select Type</option>
                   {types.map((type) => (
-                    <option key={type._id} value={type._id}>
-                      {type.name}
-                    </option>
+                    <option key={type._id} value={type._id}>{type.name}</option>
                   ))}
                 </Form.Select>
               </Form.Group>
@@ -169,7 +165,7 @@ function PostAd({ show, handleClose }) {
 
           <Form.Group className="mb-3">
             <Form.Label>Image</Form.Label>
-            <Form.Control type="file" onChange={handleFileChange} />
+            <Form.Control type="file" name="image" onChange={handleInputChange} />
           </Form.Group>
 
           <Button variant="primary" type="submit">
@@ -185,119 +181,191 @@ export default PostAd;
 
 
 
-// import { Modal, Button, Form,Row,Col } from "react-bootstrap";
-// import { useEffect , useState } from "react";
-
-// let [categories,setCategories] = useState([])
-// let [cityArea,setCityArea] = useState([])
-// let [type,setType] = useState([])
-
-//      useEffect(()=>{
-//          const fetchData = async ()=>{
-//              try{
-//                  const categoriesData = await fetch("http://localhost:5000/api/v1/categories")
-//                  const categories = await categoriesData.json()
-//                  setCategories(categories)
-//                  const cityAreaData = await fetch("http://localhost:5000/api/v1/cityarea")
-//                  const cityAreas = await cityAreaData.json()
-//                  setCityArea(cityAreas)
-//                  const typeData = await fetch("http://localhost:5000/api/v1/types")
-//                  const types = await typeData.json()
-//                  setType(types)
-//              }
-//              catch(err){
-//              console.log(err)
-//              }
-//          }
-//          fetchData();
-//      }
-// )
+// import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+// import { useEffect, useState } from "react";
+// import { useSelector, useDispatch } from "react-redux";
+// import { postAd } from "../slices/postAd.slice";
 
 
 // function PostAd({ show, handleClose }) {
+//   // State to hold API data
+//   const [categories, setCategories] = useState([]);
+//   const [cityAreas, setCityAreas] = useState([]);
+//   const [types, setTypes] = useState([]);
+//   // State to hold form data
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     price: "",
+//     description: "",
+//     features: "",
+//     startson: "",
+//     // postedbyid : data.currentuser._id, 
+//     endson: "",
+//     categoryid: "",
+//     cityareaid: "",
+//     typeid: "",
+//     image: null,
+//   });
+
+//   // Fetch data from API
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const [categoriesRes, cityAreasRes, typesRes] = await Promise.all([
+//           fetch("http://localhost:5000/api/v1/categories"),
+//           fetch("http://localhost:5000/api/v1/cityarea"),
+//           fetch("http://localhost:5000/api/v1/types"),
+//         ]);
+
+//         const [categories, cityAreas, types] = await Promise.all([
+//           categoriesRes.json(),
+//           cityAreasRes.json(),
+//           typesRes.json(),
+//         ]);
+
+//         setCategories(categories);
+//         setCityAreas(cityAreas);
+//         setTypes(types);
+//       } catch (err) {
+//         console.error("Error fetching data:", err);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   // Handle input change for text fields
+//   const handleChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({ ...prev, [name]: value }));
+//   };
+
+//   // Handle dropdown selection
+//   const handleSelectChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({ ...prev, [name]: value }));
+//   };
+
+//   // Handle file upload
+//   const handleFileChange = (e) => {
+//     setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
+//   };
+
+
+//   let dispatch = useDispatch()
+//   const { data } = useSelector((state) => state.PostAd);
+
+//   // console.log(data);
+//   // Handle form submission
+//   const handleSubmit = async (e) => {
+//     e.preventDefault()
+//     console.log("Sending data:", formData);
+//     dispatch(postAd(formData));
+//     handleClose();
+//   };
+
 //   return (
 //     <Modal show={show} onHide={handleClose}>
-//        <Modal.Header closeButton>
-//           <Modal.Title className='text-success fw-bold'>Post Advertisement</Modal.Title>
-//         </Modal.Header>
-//          <Modal.Body>
-//           <Form className='scrollable-form'>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Name</Form.Label>
+//       <Modal.Header closeButton>
+//         <Modal.Title className="text-success fw-bold">Post Advertisement</Modal.Title>
+//       </Modal.Header>
+//       <Modal.Body>
+//         <Form onSubmit={handleSubmit} className="scrollable-form">
+//           <Form.Group className="mb-3">
+//             <Form.Label>Name</Form.Label>
+//             <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter name" />
+//           </Form.Group>
 
+//           <Form.Group className="mb-3">
+//             <Form.Label>Price</Form.Label>
+//             <Form.Control type="text" name="price" value={formData.price} onChange={handleChange} placeholder="Enter price" />
+//           </Form.Group>
 
-//                <Form.Control type="text" placeholder="Enter name" />
-//             </Form.Group>
+//           <Form.Group className="mb-3">
+//             <Form.Label>Description</Form.Label>
+//             <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} placeholder="Enter description" />
+//           </Form.Group>
 
-//              <Form.Group className="mb-3">
-//               <Form.Label>Price</Form.Label>
-//               <Form.Control type="text" placeholder="Enter price" />
-//             </Form.Group>
+//           <Form.Group className="mb-3">
+//             <Form.Label>Features</Form.Label>
+//             <Form.Control as="textarea" rows={3} name="features" value={formData.features} onChange={handleChange} placeholder="Enter features" />
+//           </Form.Group>
 
-//             <Form.Group className="mb-3">
-//               <Form.Label>Description</Form.Label>
-//                <Form.Control as="textarea" rows={3} placeholder="Enter description" />
-//             </Form.Group>
+//           <Row className="mb-3">
+//             <Col md={6}>
+//               <Form.Group>
+//                 <Form.Label>Starts On</Form.Label>
+//                 <Form.Control type="date" name="startsOn" value={formData.startsOn} onChange={handleChange} />
+//               </Form.Group>
+//             </Col>
 
-//             <Form.Group className="mb-3">
-//               <Form.Label>Features</Form.Label>
-//               <Form.Control as="textarea" rows={3} placeholder="Enter features" />
-//             </Form.Group>
-//             <Row className="mb-3">
-//               <Col md={6}>
-//                 <Form.Group>
-//                   <Form.Label>Starts On</Form.Label>
-//                   <Form.Control type="date" />
-//                 </Form.Group>
-//               </Col>
+//             <Col md={6}>
+//               <Form.Group>
+//                 <Form.Label>Ends On</Form.Label>
+//                 <Form.Control type="date" name="endsOn" value={formData.endsOn} onChange={handleChange} />
+//               </Form.Group>
+//             </Col>
+//           </Row>
 
-//               <Col md={6}>
-//                 <Form.Group>
-//                  <Form.Label>Ends On</Form.Label>
-//                   <Form.Control type="date" />
-//                 </Form.Group>
-//               </Col>
-//             </Row>
-//             <Row>
-//   <Col md={4}>
-//     <Form.Group className="mb-3">
-//       <Form.Label>Category</Form.Label>
-//       <Form.Select className="bg-success text-white">
-//         <option>Select Category</option>
-//       </Form.Select>
-//     </Form.Group>
-//   </Col>
-//   <Col md={4}>
-//     <Form.Group className="mb-3">
-//        <Form.Label>City Area</Form.Label>
-//        <Form.Select className="bg-success text-white">
-//          <option>Select City Area</option>
-//       </Form.Select>
-//      </Form.Group>
-//    </Col>
-//   <Col md={4}>
-//     <Form.Group className="mb-3">
-//     <Form.Label>Type</Form.Label>
-//       <Form.Select className="bg-success text-white">
-//         <option>Select Type</option>
-//        </Form.Select>
-//     </Form.Group>
-//    </Col>
-//  </Row>
+//           <Row>
+//             <Col md={4}>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Category</Form.Label>
+//                 <Form.Select name="categoryid" className="bg-success text-white" value={formData.category} onChange={handleSelectChange}>
+//                   <option value="">Select Category</option>
+//                   {categories.map((cat) => (
+//                     <option key={cat._id} value={cat._id}>
+//                       {cat.name}
+//                     </option>
+//                   ))}
+//                 </Form.Select>
+//               </Form.Group>
+//             </Col>
 
+//             <Col md={4}>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>City Area</Form.Label>
+//                 <Form.Select name="cityareaid" className="bg-success text-white" value={formData.cityArea} onChange={handleSelectChange}>
+//                   <option value="">Select City Area</option>
+//                   {cityAreas.map((area) => (
+//                     <option key={area._id} value={area._id}>
+//                       {area.name}
+//                     </option>
+//                   ))}
+//                 </Form.Select>
+//               </Form.Group>
+//             </Col>
 
-//              <Form.Group className="mb-3">
-//                <Form.Label>Image</Form.Label>
-//                <Form.Control type="file" />
-//             </Form.Group>
+//             <Col md={4}>
+//               <Form.Group className="mb-3">
+//                 <Form.Label>Type</Form.Label>
+//                 <Form.Select name="typeid" className="bg-success text-white" value={formData.type} onChange={handleSelectChange}>
+//                   <option value="">Select Type</option>
+//                   {types.map((type) => (
+//                     <option key={type._id} value={type._id}>
+//                       {type.name}
+//                     </option>
+//                   ))}
+//                 </Form.Select>
+//               </Form.Group>
+//             </Col>
+//           </Row>
 
-//              <Button variant="primary" type="submit">
-//                Post Advertisement
-//             </Button>
-//            </Form>
-//          </Modal.Body>
-//          </Modal>
+//           <Form.Group className="mb-3">
+//             <Form.Label>Image</Form.Label>
+//             <Form.Control type="file" onChange={handleFileChange} />
+//           </Form.Group>
+
+//           <Button variant="primary" type="submit">
+//             Post Advertisement
+//           </Button>
+//         </Form>
+//       </Modal.Body>
+//     </Modal>
 //   );
 // }
 
 // export default PostAd;
+
+
+

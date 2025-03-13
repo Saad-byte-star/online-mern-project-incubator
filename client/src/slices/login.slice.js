@@ -20,7 +20,7 @@ export const user = createAsyncThunk('fetchData', async (loginData) => {
 const loginSlice = createSlice({
     name: "Login",
     initialState :{
-    data: [],
+    data: {},
     loading:false,
     loggedIn : false,
     error:null  
