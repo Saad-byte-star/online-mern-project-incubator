@@ -5,7 +5,7 @@ const provincesSchema = new mongoose.Schema({
     },
     "countryid":{
      type:mongoose.SchemaTypes.ObjectId,
-     ref:"countries"
+     ref:"Countries"
     }
 })
 const Provinces = mongoose.model("Provinces",provincesSchema)

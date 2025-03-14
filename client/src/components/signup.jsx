@@ -13,7 +13,9 @@ const Signup = ({ show, handleClose  }) => {
   let [image,setImage] = useState("")
  
   let dispatch = useDispatch()
+
   const { data } = useSelector((state) => state.Signup);
+  
   const signupData = {
     name,
     email,

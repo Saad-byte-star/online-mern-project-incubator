@@ -70,9 +70,8 @@ function PostAd({ show, handleClose }) {
     }));
   };
 
+
   let dispatch = useDispatch();
-
-
 
   // Handle form submission
   const handleSubmit = async (e) => {

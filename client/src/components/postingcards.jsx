@@ -31,7 +31,7 @@ return (
             <Card.Title className='ms-3 mt-3'>{post.name}</Card.Title>
             <Card.Body>
               <Card.Text>{post.description}</Card.Text>
-              <Button variant="success" onClick={()=>{navigate('/postingDetail')}}>More Details</Button>
+              <Button variant="success" onClick={()=>{navigate(`/posting/${post._id}`)}}>More Details</Button>
             </Card.Body>
           </Card>
         </Col>

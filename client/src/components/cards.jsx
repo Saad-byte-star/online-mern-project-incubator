@@ -25,9 +25,9 @@ function Cards() {
       <h1 className="text-success fw-bold text-center my-3">Explore By Categories</h1>
       <Row className="my-4 mx-1 d-flex flex-wrap">
         {data.map((card) => (
-          <Col className=" col-md-3 col-sm-6">
-            <Card onClick={() => { navigate(`/categories`); }} className='mt-3'>
-              <Card.Img variant="top" src={card.image} />
+          <Col key={card._id} className=" col-md col-sm-6">
+            <Card onClick={() => { navigate(`/category/${card._id}/posts`); }} className='mt-3'>
+              <Card.Img variant="top" src={`/images/${card.image}`} />
               <Card.Body>
                 <Card.Title>{card.name}</Card.Title>
                 <Card.Text className="text-success fw-bold">{card.quantity}</Card.Text>

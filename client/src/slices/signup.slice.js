@@ -1,11 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-
-// export const user = createAsyncThunk('fetchData',async()=>{
-//     const response = await fetch("http://localhost:5000/api/v1/users/signup");  // NOT POST METHOD 
-//     return await response.json();
-// })
-
 export const user = createAsyncThunk('fetchData', async (signupData) => {
     const response = await fetch("http://localhost:5000/api/v1/users/signup", {
         method: "POST",
@@ -35,7 +29,6 @@ const signupSlice = createSlice({
      builder
         .addCase(user.pending,(state)=>{
          state.loading= true   
-         
     })
     .addCase(user.fulfilled,(state,action)=>{
         state.loading=false,

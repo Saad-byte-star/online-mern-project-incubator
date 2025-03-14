@@ -26,7 +26,8 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/detail" element={<Detail />} />
         <Route path="/userdashboard" element={<Userdashboard />} />
-        <Route path="/postingdetail" element={<PostingDetail/>} /> 
+        <Route path="/posting/:id" element={<Detail/>} /> 
+        <Route path="/category/:cid/posts" element={<Categories/>} /> 
         </Route>
     {/* <Route path="/about" element={<About />} />
         <Route path="/categories" element={<Categories />} />

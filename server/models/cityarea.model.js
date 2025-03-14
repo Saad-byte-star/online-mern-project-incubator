@@ -5,7 +5,7 @@ const cityareaSchema = new mongoose.Schema({
     },
     "cityid":{
      type:mongoose.SchemaTypes.ObjectId,
-     ref:"cities"
+     ref:"Cities"
     }
 })
 const Cityarea = mongoose.model("Cityarea",cityareaSchema)
