@@ -3,10 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const user = createAsyncThunk('fetchData', async (signupData) => {
     const response = await fetch("http://localhost:5000/api/v1/users/signup", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(signupData) 
+        body: signupData // Sending FormData 
     });
 
     if (!response.ok) {

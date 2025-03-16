@@ -3,10 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const postAd = createAsyncThunk('postAd', async (postData) => {
     const response = await fetch("http://localhost:5000/api/v1/advertisement", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(postData) 
+        body: postData 
     });
 
     if (!response.ok) {

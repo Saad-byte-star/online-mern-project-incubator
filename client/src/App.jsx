@@ -1,15 +1,15 @@
 
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import Footer from './components/footer';
+// import Footer from './components/footer';
 import Categories from './components/categories';
 import About from './components/about';
 import Home from './components/home';
 import Contact from './components/contact';
-import Navigationbar from './components/navbar';
+// import Navigationbar from './components/navbar';
 import Detail from './components/detail';
 import Userdashboard from './components/userdashboard';
-import PostingDetail from './components/postingdetail';
+// import PostingDetail from './components/postingdetail';
 import MainLayouts from './layouts/mainlayouts';
 
 
@@ -29,14 +29,8 @@ function App() {
         <Route path="/posting/:id" element={<Detail/>} /> 
         <Route path="/category/:cid/posts" element={<Categories/>} /> 
         </Route>
-    {/* <Route path="/about" element={<About />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/userdashboard" element={<Userdashboard />} />
-        <Route path="/postingdetail" element={<PostingDetail/>} />        */}
-      </Routes>
-      {/* <Footer />  */}
+    </Routes>
+
     </>
   );
 }

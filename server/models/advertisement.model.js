@@ -35,6 +35,10 @@ const advertisementSchema = new mongoose.Schema({
      type:mongoose.SchemaTypes.ObjectId,
      ref:"Cityarea"
     },
+    "image" : {
+        type:mongoose.SchemaTypes.String,
+        default: "dummy.jpg"
+    }
    
  }
 // ,{

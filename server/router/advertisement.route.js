@@ -14,9 +14,10 @@
 const express = require('express');
 const advertisementRoute = express.Router();
 const AdvertisementHandler = require('../dacs/advertisement.dac');
+const upload = require('../middlewares/fileUpload.middleware');
 
 // Define advertisement routes
-advertisementRoute.post('/', AdvertisementHandler.addAdvertisement);
+advertisementRoute.post('/', upload.single('image') , AdvertisementHandler.addAdvertisement);
 advertisementRoute.get('/', AdvertisementHandler.getAdvertisement);
 advertisementRoute.put('/aid/:id', AdvertisementHandler.updateAdvertisement);
 advertisementRoute.delete('/aid/:id', AdvertisementHandler.removeAdvertisement);
