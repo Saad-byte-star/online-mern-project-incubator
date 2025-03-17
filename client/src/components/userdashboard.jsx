@@ -6,20 +6,50 @@ function Userdashboard() {
   let [form, setForm] = useState(false)
   let [editForm, setEditform] = useState(false)
   const [user, setUser] = useState(null);
+  const [ads, setAds] = useState([])
 
   const { data } = useSelector((state) => state.Login)
   const userId = data?.currentuser?._id;
 
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const response = await fetch(`http://localhost:5000/api/v1/users/uid/${userId}`);
-      const data = await response.json();
-      setUser(data);
-      console.log(user)
+      try {
+        if (!userId) return;
+        const response = await fetch(`http://localhost:5000/api/v1/users/uid/${userId}`);
+        const data = await response.json();
+        console.log("User Data Fetched:", data); // ✅ Debugging
+        setUser(data);
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+      }
     };
-
+  
     fetchUserProfile();
   }, [userId]);
+  
+  useEffect(() => {
+    const fetchAds = async () => {
+      try {
+        if (!user?._id) return;
+        console.log("Fetching ads for user:", user._id); // ✅ Debugging
+  
+        const response = await fetch(`http://localhost:5000/api/v1/advertisement`);
+        const adsData = await response.json();
+        console.log("Ads Data Fetched:", adsData); // ✅ Debugging
+  
+        const filteredAds = adsData.filter(ad => ad.postedbyid._id === user._id);
+        console.log("Filtered Ads:", filteredAds); // ✅ Debugging
+  
+        setAds(filteredAds);
+      } catch (err) {
+        console.error("Error fetching ads:", err);
+      }
+    };
+  
+    fetchAds();
+  }, [user]); // ✅ Runs only when `user` updates
+  
+  
 
   return (
 
@@ -55,7 +85,7 @@ function Userdashboard() {
             )}
 
             <Card.Body>
-              <h3 className="text-success">{ user != null ? user.name : "Loading..." }</h3>
+              <h3 className="text-success">{user != null ? user.name : "Loading..."}</h3>
               <hr />
               <Card.Text className="fw-bold">Email:</Card.Text>
               <Card.Text className="fw-bold">Contact Number:</Card.Text>
@@ -66,95 +96,33 @@ function Userdashboard() {
           </Card>
         </Col>
         <Col md={9}>
-          <h2 className="text-success">Post Advertisement</h2>
-          <Card className="m-2">
-            <Row className="m-1 d-flex align-items-center">
-              <Col md={3} className="text-center">
-                <Card.Img src="./images/image2.avif" className="img-fluid" />
-              </Col>
-              <Col md={9}>
-                <Card.Title>Sedan</Card.Title>
-                <Card.Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officiis nemo voluptates adipisci soluta?</Card.Text>
-                <Card.Title>Price:600000</Card.Title>
-                <Card.Title>Quantity:Lahore</Card.Title>
-                <Button variant="danger" className="btn">Delete</Button>
-                <Button onClick={() => setEditform(true)}>Edit</Button>
-                <Button variant="primary">View More</Button>
-              </Col>
+  <h2 className="text-success">Your Advertisements</h2>
+  {ads.length > 0 ? (
+    ads.map((a) => (
+      <Card key={a._id} className="m-2"> 
+        <Row className="m-1 d-flex align-items-center">
+          <Col md={3} className="text-center">
+            <Card.Img src="./images/image2.avif" className="img-fluid" />
+          </Col>
+          <Col md={9}>
+            <Card.Title>{a.name}</Card.Title>
+            <Card.Text>{a.description}</Card.Text>
+            <Card.Title>Price: {a.price}</Card.Title>
+            <Card.Title>Area: {a.cityid?.name}</Card.Title>
+            <Button variant="danger">Delete</Button>
+            <Button onClick={() => setEditform(true)}>Edit</Button>
+            <Button variant="primary">View More</Button>
+          </Col>
+        </Row>
+      </Card>
+    ))
+  ) : (
+    <p>No advertisements found.</p>
+  )}
+</Col>
 
-            </Row>
-          </Card>
-          <Card className="m-2">
-            <Row className="m-1 d-flex align-items-center">
-              <Col md={3} className="text-center">
-                <Card.Img src="./images/image3.avif" className="img-fluid" />
-              </Col>
-              <Col md={9}>
-                <Card.Title>SUV</Card.Title>
-                <Card.Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officiis nemo voluptates adipisci soluta?</Card.Text>
-                <Card.Title>Price:600000</Card.Title>
-                <Card.Title>Quantity:Lahore</Card.Title>
-                <Button variant="danger" className="btn">Delete</Button>
-                <Button>Edit</Button>
-                <Button variant="primary">View More</Button>
-              </Col>
-
-            </Row>
-          </Card>
-          <Card className="m-2">
-            <Row className="m-1 d-flex align-items-center">
-              <Col md={3} className="text-center">
-                <Card.Img src="./images/image4.avif" className="img-fluid" />
-              </Col>
-              <Col md={9}>
-                <Card.Title>Sedan</Card.Title>
-                <Card.Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officiis nemo voluptates adipisci soluta?</Card.Text>
-                <Card.Title>Price:600000</Card.Title>
-                <Card.Title>Quantity:Lahore</Card.Title>
-                <Button variant="danger" className="btn">Delete</Button>
-                <Button>Edit</Button>
-                <Button variant="primary">View More</Button>
-              </Col>
-
-            </Row>
-          </Card>
-          <Card className="m-2">
-            <Row className="m-1 d-flex align-items-center">
-              <Col md={3} className="text-center">
-                <Card.Img src="./images/image2.avif" className="img-fluid" />
-              </Col>
-              <Col md={9}>
-                <Card.Title>SUV</Card.Title>
-                <Card.Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officiis nemo voluptates adipisci soluta?</Card.Text>
-                <Card.Title>Price:600000</Card.Title>
-                <Card.Title>Quantity:Lahore</Card.Title>
-                <Button variant="danger" className="btn">Delete</Button>
-                <Button>Edit</Button>
-                <Button variant="primary">View More</Button>
-              </Col>
-
-            </Row>
-          </Card>
-          <Card className="m-2">
-            <Row className="m-1 d-flex align-items-center">
-              <Col md={3} className="text-center">
-                <Card.Img src="./images/image4.avif" className="img-fluid" />
-              </Col>
-              <Col md={9}>
-                <Card.Title>Sedan</Card.Title>
-                <Card.Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa officiis nemo voluptates adipisci soluta?</Card.Text>
-                <Card.Title>Price:600000</Card.Title>
-                <Card.Title>Quantity:Lahore</Card.Title>
-                <Button variant="danger" className="btn">Delete</Button>
-                <Button>Edit</Button>
-                <Button variant="primary">View More</Button>
-              </Col>
-
-            </Row>
-          </Card>
-
-        </Col>
       </Row >
+      
       {/* Edit  Form */}
       < Modal show={form} onHide={() => setForm(false)
       } centered >

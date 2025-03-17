@@ -10,7 +10,7 @@ export const user = createAsyncThunk('fetchData', async (loginData) => {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to sign up");
+        throw new Error("Failed to Login up");
     }
     // console.log("This is the Login Response" , await response.json())
     return await response.json();
@@ -35,6 +35,7 @@ const loginSlice = createSlice({
         state.loading=false,
         state.loggedIn = true,
         state.data=action.payload
+        console.log(state.data)
     })
     .addCase(user.rejected,(state,action)=>{
         state.loading=false,

@@ -28,7 +28,7 @@ return (
       {data.map((post) => (
         <Col key={post._id} className="col-md-6 col-sm-6">
           <Card className='mt-3'>
-            <Card.Img variant="top" src={`http://localhost:5000/public/images/${post.image}`} />
+            <Card.Img style={{ height: "500px", objectFit: "cover" }} variant="top" src={`http://localhost:5000/public/images/${post.image}`} />
             <Card.Title className='ms-3 mt-3'>{post.name}</Card.Title>
             <Card.Body>
               <Card.Text>{post.description}</Card.Text>

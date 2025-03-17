@@ -29,8 +29,9 @@ class advertisementHandler {
     }
     async getAdvertisement(req, res) {
         try {
-            const getted = await Advertisement.find().populate("postedbyid").populate("statusid")
+            const getted = await Advertisement.find().populate("postedbyid").populate("cityid").populate("typeid").populate("statusid")
             if (getted) return res.status(200).json(getted)
+            console.log(getted)
             return res.status(400).json({ msg: 'Unable to find Advertisement' })
 
         }

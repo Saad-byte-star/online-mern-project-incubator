@@ -74,7 +74,7 @@ function PostAd({ show, handleClose }) {
     formData.append("postedbyid", postedbyid);
     formData.append("typeid", typeid);
     formData.append("categoryid", categoryid);
-    formData.append("cityareaid", cityareaid);
+    formData.append("cityid", cityareaid);
     formData.append("image", image); // Must be a File object
 
     // 🔥 Log before dispatching

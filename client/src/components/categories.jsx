@@ -30,23 +30,23 @@ function Categories() {
       <div className="image-container">
         <img
           className="d-block w-100"
-          src="./images/image1.png"
+          src="/images/image.png"
           alt="First slide"
-          style={{ height: "200px", objectFit: "cover" }}
+          style={{ height: "300px", objectFit: "cover" }}
         />
-        <div className="text-overlay">
+        <div className="text-center text-overlay">
           <div className="green-bracket"></div>
-          <h1>Car Details</h1>
+          <h1>Categories</h1>
         </div>
       </div>
       {/* </Row> */}
-      <h1 className="text-success text-center">Posts in { category.name }</h1>
+      <h1 className="text-success text-center mt-3">Posts in { category.name }</h1>
       {
         data.map((post) => (
           <Card key={post._id} className="m-3">
             <Row className=" m-3">
               <Col md={3}>
-                <Card.Img src={`/images/${post.image}`} alt={`/images/${post.image}`} />
+                <Card.Img style={{ height: "200px", objectFit: "cover" }} src={`http://localhost:5000/public/images/${post.image}`} alt={`${post.name}`} />
               </Col>
               <Col md={9}>
                 <Card.Body>

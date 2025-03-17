@@ -15,6 +15,7 @@ function Detail() {
         const response = await fetch(`http://localhost:5000/api/v1/advertisement`)
         const result = await response.json()
         setPost(result.find(p => p._id === id));
+        // console.log(post)
       }
       catch (err) {
         console.log(err)
@@ -30,9 +31,9 @@ function Detail() {
       <div className="image-container">
         <img
           className="d-block w-100"
-          src="./images/image1.png"
+          src={`http://localhost:5000/public/images/${post.image}`}
           alt="First slide"
-          style={{ height: "200px", objectFit: "cover" }}
+          style={{  backgroundColor : "#DAF7A6" , height: "200px", objectFit: "cover" }}
         />
         <div className="text-overlay">
           <div className="green-bracket"></div>
@@ -45,7 +46,7 @@ function Detail() {
         <Col md={8} >
           <div className="d-flex align-items-center my-2">
             <Card.Img
-              src="./images/image2.avif"
+              src={`http://localhost:5000/public/images/${post.image}`}
               className="img-fluid me-3"
               style={{ width: "80px", height: "60px", objectFit: "cover" }}
             />
@@ -55,7 +56,7 @@ function Detail() {
                 <Card.Title className="fw-bold mb-1">{post.name}</Card.Title>
                 <div className="d-flex align-items-center">
                   <FaMapMarkerAlt className="text-success me-1" />
-                  <span className="me-3">post.cityarea.name TOBEFIXED</span>
+                  <span className="me-3">{ post?.cityid?.name }</span>
                   <FaMoneyBillAlt className="text-success me-1" />
                   <span>{post.price}</span>
                 </div>
@@ -63,12 +64,7 @@ function Detail() {
             </div>
           </div>
           <h3>Car Description</h3>
-          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus distinctio eaque ea minus
-            blanditiis non?  id. Suscipit ut porro ab quod sint soluta quo, praesentium tempora
-            deserunt consectetur.
-            Lorem, ipsum  sit amet consectetur adipisicing elit. Dolor pariatur at iure in nemo architecto
-            aliquam adipisci labore alias quia obcaecati quidem, hic expedita? Suscipit earum numquam eum laborum
-            sapiente?</p>
+          <p>{post.description}</p>
           <h3>Features</h3>
           <ul className="ps-0" style={{ listStyle: "none" }}>
             <li className="d-flex align-items-center mb-2">

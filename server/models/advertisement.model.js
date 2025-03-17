@@ -25,7 +25,7 @@ const advertisementSchema = new mongoose.Schema({
     },
     "typeid":{
      type:mongoose.SchemaTypes.ObjectId,
-     ref:"Types"
+     ref:"Type"
     },
     "categoryid":{
      type:mongoose.SchemaTypes.ObjectId,

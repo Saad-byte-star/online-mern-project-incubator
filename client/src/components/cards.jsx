@@ -27,7 +27,7 @@ function Cards() {
         {data.map((card) => (
           <Col key={card._id} className=" col-md col-sm-6">
             <Card onClick={() => { navigate(`/category/${card._id}/posts`); }} className='mt-3'>
-              <Card.Img variant="top" src={`/images/${card.image}`} />
+              <Card.Img style={{ height: "200px", objectFit: "cover" }} variant="top" src={`/images/${card.image}`} />
               <Card.Body>
                 <Card.Title>{card.name}</Card.Title>
                 <Card.Text className="text-success fw-bold">{card.quantity}</Card.Text>
