@@ -95,7 +95,7 @@ class usersHandler {
         try {
             const obj = req.body;
             console.log(obj);
-            obj.image = req.file.filename
+            obj.image = req.file.filename // Only This is changed for filehandling
             console.log('So the user to be Added is :' , obj);
             if (!obj.email || !obj.password || !obj.name) return res.status(400).json("invalid json data, email,password, fullName and role are required field");
             obj.password = await bcryptjs.hash(obj.password, 10);

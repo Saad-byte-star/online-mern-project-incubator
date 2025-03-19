@@ -72,7 +72,7 @@ const Signup = ({ show, handleClose }) => {
           <Form.Group className="mb-3">
             <Form.Label>Profile Picture</Form.Label>
             <Form.Control type="file" accept="image/*" onChange={handleFileChange} />
-            {preview && <img src={preview} alt="Preview" width="100" />}
+            {preview && <img src={preview} className="rounded-circle" alt="Preview" width="100" />}
           </Form.Group>
           <Button variant="primary" type="submit" onClick={handleSubmit} >
             Sign Up

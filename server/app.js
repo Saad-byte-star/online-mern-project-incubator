@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 require('dotenv').config()
 const mongoose = require('mongoose')
-const path = require('path')
+const path = require('path') // for getting public folder path
 const cors = require("cors");
 app.use(cors());
 app.use(express.json({ limit : '2mb' }))
@@ -42,7 +42,7 @@ const host = process.env.HOST
 
 async function connectDB() {
     await mongoose.connect(process.env.CON_STR)
-}
+}   
 
 connectDB().then(() => {
     app.listen(port, host, () => {
