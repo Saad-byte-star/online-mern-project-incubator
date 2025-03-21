@@ -19,13 +19,6 @@ const Login = ({ show, handleClose }) => {
     e.preventDefault()
     console.log("Sending Login data:", loginData);
     dispatch(user(loginData));
-    console.log('Logged In :' , loggedIn);
-    if (!loggedIn) {
-      alert('Login Failed , Invalid Credentials')
-    }
-    else {
-      alert('Login Successful!')
-    }
     handleClose();
   };
 

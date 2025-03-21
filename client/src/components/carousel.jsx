@@ -1,45 +1,10 @@
-import React from 'react';
-import { Carousel, Container, Row, Col, Form, Button } from 'react-bootstrap';
-import { HiMagnifyingGlassCircle } from "react-icons/hi2";
-import { useState, useEffect } from 'react'
-
-
+import { Carousel , Button } from 'react-bootstrap';
+import { useState } from 'react'
+import PostAd from './postAd';
+import Search from './search';
 
 function Carousels() {
-
-  // State to hold API data
-  const [categories, setCategories] = useState([]);
-  const [cityAreas, setCityAreas] = useState([]);
-  const [types, setTypes] = useState([]);
-
-  // Fetch data from API
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [categoriesRes, cityAreasRes, typesRes] = await Promise.all([
-          fetch("http://localhost:5000/api/v1/categories"),
-          fetch("http://localhost:5000/api/v1/cityarea"),
-          fetch("http://localhost:5000/api/v1/types"),
-        ]);
-
-        const [categories, cityAreas, types] = await Promise.all([
-          categoriesRes.json(),
-          cityAreasRes.json(),
-          typesRes.json(),
-        ]);
-
-        setCategories(categories);
-        setCityAreas(cityAreas);
-        setTypes(types);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-
+  const [showPostAd, setShowPostAd] = useState(false);
 
   return (
     <>
@@ -57,7 +22,7 @@ function Carousels() {
               <p style={{ marginLeft: '6rem' }}>Drive Your Dream: Find Your Perfect Car Today</p>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                 <Button variant="success">Search A Car</Button>
-                <Button variant="primary">Post Advertisement</Button>
+                <Button variant="primary" onClick={() => setShowPostAd(true)} >Post Advertisement</Button>
               </div>
             </div>
           </Carousel.Caption>
@@ -75,44 +40,16 @@ function Carousels() {
             <p style={{ marginLeft: '6rem' }}>Drive Your Dream: Find Your Perfect Car Today</p>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <Button variant="success" style={{ marginRight: '10px' }}>Search A Car</Button>
-              <Button variant="primary" > Post Advertisement</Button>
+              <Button variant="primary" onClick={() => setShowPostAd(true)} >Post Advertisement</Button>
             </div>
           </Carousel.Caption>
         </Carousel.Item>
       </Carousel>
+      <Search/>
       {/* Form */}
-      <Container fluid >
-        <Row className="search-row">
-          <Col md={12} >
-            <Form className="search-form">
-              <Row>
-                <Col xs={12} md={3} >
-                  <Form.Control type="text" placeholder="Keyword" />
-                </Col>
-                <Col xs={12} md={3}>
-                  <Form.Select>
-                    <option value="">Select Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat._id}>{cat.name}</option>
-                    ))}
-                  </Form.Select>
-                </Col>
-                <Col xs={12} md={3}>
-                  <Form.Select>
-                    <option value="">Select City Area</option>
-                    {cityAreas.map((area) => (
-                      <option key={area._id} value={area._id}>{area.name}</option>
-                    ))}
-                  </Form.Select>
-                </Col>
-                <Col xs={12} md={3} className="d-grid">
-                  <Button variant="dark" type="submit"><HiMagnifyingGlassCircle size={25} />Search</Button>
-                </Col>
-              </Row>
-            </Form>
-          </Col>
-        </Row>
-      </Container>
+      <PostAd show={showPostAd} handleClose={() => setShowPostAd(false)} />
+
+
     </>
   );
 }

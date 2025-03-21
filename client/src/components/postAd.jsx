@@ -76,6 +76,7 @@ function PostAd({ show, handleClose }) {
     formData.append("categoryid", categoryid);
     formData.append("cityid", cityareaid);
     formData.append("image", image); // Must be a File object
+    // formData.append('token' , loginState?.data?.token )
 
     // 🔥 Log before dispatching
     for (let pair of formData.entries()) {
