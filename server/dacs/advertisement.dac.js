@@ -1,4 +1,5 @@
 const Advertisement = require('../models/advertisement.model')
+const mongoose = require('mongoose')
 class advertisementHandler {
     constructor() { }
     async addAdvertisement(req, res) {
@@ -43,28 +44,27 @@ class advertisementHandler {
     }
     async updateAdvertisement(req, res) {
         try {
-            const id = req.params.id
-            const updated = await Advertisement.findByIdAndUpdate(id, {
-                name: req.body.name,
-                price: req.body.price,
-                description: req.body.description,
-                startson: req.body.startson,
-                endson: req.body.endson,
-                postedbyid: req.body.postedbyid,
-                statusid: req.body.statusid,
-                typeid: req.body.typeid,
-                categoryid: req.body.categoryid,
-                cityid: req.body.cityid
-            })
-            if (updated) return res.status(200).json({ " Updated ": updated })
-            return res.status(400).json({ msg: 'unable to update Advertisement' })
+            const id = req.params.id;
+            const updates = { ...req.body }; // Directly take only provided fields
+            console.log(updates);
 
-        }
-        catch (err) {
-            console.log(err)
-            res.status(500).json({ msg: err.message })
+            if (req.file?.filename) {
+                updates.image = req.file.filename; // If image is uploaded, update it
+            }
+    
+            const updatedAd = await Advertisement.findByIdAndUpdate(id, updates, { new: true });
+    
+            if (updatedAd) {
+                return res.status(200).json({ message: "Advertisement updated", updatedAd });
+            } else {
+                return res.status(400).json({ msg: "Unable to update advertisement" });
+            }
+        } catch (err) {
+            console.error("Error updating advertisement:", err);
+            res.status(500).json({ msg: err.message });
         }
     }
+    
     async removeAdvertisement(req, res) {
         try {
             const id = req.params.id
