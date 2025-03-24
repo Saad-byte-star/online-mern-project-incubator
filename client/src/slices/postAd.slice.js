@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
+import { useSelector } from "react-redux";
+import { logout } from "./login.slice";
+import { act } from "react";
 // Post a new advertisement
 export const postAd = createAsyncThunk('postAd', async (postData) => {
     const response = await fetch("http://localhost:5000/api/v1/advertisement", {
         method: "POST",
-        body: postData 
+        body: postData
     });
 
     if (!response.ok) {
@@ -13,29 +15,69 @@ export const postAd = createAsyncThunk('postAd', async (postData) => {
     return await response.json();
 });
 
-// Edit an existing advertisement
-export const editAd = createAsyncThunk('editAd', async ({ adId, updatedData }) => {
-    const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
-        method: "PUT",
-        body: updatedData
-    });
+// // Edit an existing advertisement
+// export const editAd = createAsyncThunk('editAd', async ({ adId, updatedData , token }) => {
+//     console.log("Inside Dispatch Edit Ad!")
+//     console.log("Recieved Token : " , token);
+//     const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
+//         method: "PUT",
+//         headers: {
+//             "X-Auth-Token": token
+//         },
+//         body: updatedData
+//     });
 
-    if (!response.ok) {
-        throw new Error("Failed to Edit Ad!");
+//     if (!response.ok) {
+//         throw new Error("Failed to Edit Ad!");
+//     }
+//     return await response.json();
+// });
+
+export const editAd = createAsyncThunk('editAd', async ({ adId, updatedData, token }, { rejectWithValue, dispatch }) => {
+    try {
+        const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
+            method: "PUT",
+            headers: {
+                "X-Auth-Token": token
+            },
+            body: updatedData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (errorData.message === "session expired") {
+                dispatch(logout()); // Dispatch logout here
+            }
+            return rejectWithValue(errorData.message);
+        }
+        return await response.json();
+    } catch (error) {
+        return rejectWithValue(error.message);
     }
-    return await response.json();
 });
 
 // Delete an advertisement
-export const deleteAd = createAsyncThunk('deleteAd', async (adId) => {
+export const deleteAd = createAsyncThunk('deleteAd', async ({ adId, token }, { rejectWithValue, dispatch }) => {
+
     const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+            "X-Auth-Token": token
+        }
     });
 
     if (!response.ok) {
-        throw new Error("Failed to Delete Ad!");
+        const errorData = await response.json();
+        if (errorData.message === "session expired") {
+            dispatch(logout()); // Dispatch logout here
+        }
+        return rejectWithValue(errorData.message);
     }
-    return adId;
+    return await response.json();
+    // if (!response.ok) {
+    //     throw new Error("Failed to Delete Ad!");
+    // }
+    // return adId;
 });
 
 const postAdSlice = createSlice({
@@ -43,7 +85,7 @@ const postAdSlice = createSlice({
     initialState: {
         data: {},
         loading: false,
-        error: null  
+        error: null
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -68,7 +110,10 @@ const postAdSlice = createSlice({
             })
             .addCase(editAd.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message;
+                state.error = action.payload || action.error.message;
+                if (action.payload === "session expired") {
+                    console.log("Session expired! Logging out user...");
+                }
             })
             .addCase(deleteAd.pending, (state) => {
                 state.loading = true;
@@ -81,7 +126,10 @@ const postAdSlice = createSlice({
             })
             .addCase(deleteAd.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.error.message;
+                state.error = action.payload || action.error.message;
+                if (action.payload === "session expired") {
+                    console.log("Session expired! Logging out user...");
+                }
             });
     }
 });

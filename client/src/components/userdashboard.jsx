@@ -4,8 +4,21 @@ import { useSelector, useDispatch } from "react-redux";
 import EditUserModal from "./editModals/EditUserModal";
 import EditAdModal from "./editModals/EditAdModal";
 import { deleteAd } from "../slices/postAd.slice";
-
+import { useNavigate } from "react-router";
 function UserDashboard() {
+
+
+  const navigate = useNavigate();
+  const { error } = useSelector((state) => state.PostAd);
+  useEffect(() => {
+    if (error === "session expired") {
+      alert("Your session has expired. Please log in again.");
+      navigate("/"); // Redirect user to login page
+    }
+  }, [error, navigate]);
+
+
+
   const [form, setForm] = useState(false);
   const [editForm, setEditForm] = useState(false);
   const [selectedAd, setSelectedAd] = useState(null); // Stores selected ad for editing
@@ -16,6 +29,7 @@ function UserDashboard() {
   const { data } = useSelector((state) => state.Login);
   const postState = useSelector((state) => state.PostAd);
   const userId = data?.currentuser?._id;
+  const token = data?.token
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -54,7 +68,7 @@ function UserDashboard() {
   };
 
   const handleDelete = (adId) => {
-    dispatch(deleteAd(adId));
+    dispatch(deleteAd({"adId" : adId,"token" : token}));
   };
 
   return (

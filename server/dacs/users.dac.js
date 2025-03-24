@@ -1,13 +1,13 @@
 const Users = require('../models/users.model')
 const jwt = require('jsonwebtoken')
 const bcryptjs = require("bcryptjs")
-
+require("dotenv").config()
 class usersHandler {
     constructor() { }
     async addUsers(req, res) {
         try {
             console.log('string running');
-            const { name, email, password, birthdate, contact, roles , image } = req.body;
+            const { name, email, password, birthdate, contact, roles, image } = req.body;
 
             const added = await Users.create({
                 name,
@@ -43,7 +43,7 @@ class usersHandler {
         try {
             const id = req.params.id;
             const getted = await Users.findById(id).populate("roles")
-            console.log('user found by Id :' , getted);
+            // console.log('user found by Id :' , getted);
             if (getted) return res.status(200).json(getted)
             return res.status(400).json({ msg: 'Unable to find Users' })
 
@@ -96,7 +96,7 @@ class usersHandler {
             const obj = req.body;
             console.log(obj);
             obj.image = req.file.filename // Only This is changed for filehandling
-            console.log('So the user to be Added is :' , obj);
+            console.log('So the user to be Added is :', obj);
             if (!obj.email || !obj.password || !obj.name) return res.status(400).json("invalid json data, email,password, fullName and role are required field");
             obj.password = await bcryptjs.hash(obj.password, 10);
             const created = await Users.create(obj);
@@ -118,7 +118,7 @@ class usersHandler {
                     const token = jwt.sign(
                         payLoad,
                         key,
-                        { expiresIn: '1h' }
+                        { expiresIn: '10m' }
                     )
                     return res.status(200).json({ token, currentuser })
                 }

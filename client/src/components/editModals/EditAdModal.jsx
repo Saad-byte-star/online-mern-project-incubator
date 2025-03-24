@@ -2,9 +2,18 @@ import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { editAd } from "../../slices/postAd.slice";
 import { useSelector, useDispatch } from "react-redux";
-
+import { useNavigate } from "react-router";
 const EditAdModal = ({ show, handleClose, adId, adData }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { error } = useSelector((state)=> state.PostAd);
+  useEffect(() => {
+    if (error === "session expired") {
+        alert("Your session has expired. Please log in again.");
+        navigate("/"); // Redirect user to login page
+    }
+}, [error, navigate]);
 
   // State for form fields
   const [name, setName] = useState("");
@@ -14,26 +23,28 @@ const EditAdModal = ({ show, handleClose, adId, adData }) => {
   const [startson, setStartsOn] = useState("");
   const [endson, setEndsOn] = useState("");
   const [categoryid, setCategoryId] = useState("");
-  const [cityareaid, setCityAreaId] = useState();
-  const [typeid, setTypeId] = useState();
+  const [cityareaid, setCityAreaId] = useState("");
+  const [typeid, setTypeId] = useState("");
   const [image, setImage] = useState(null);
 
   // State for dropdown options
   const [categories, setCategories] = useState([]);
   const [cityAreas, setCityAreas] = useState([]);
   const [types, setTypes] = useState([]);
-
+  // console.log(adData)
   useEffect(() => {
     if (adData) {
       setName(adData.name);
       setPrice(adData.price);
       setDescription(adData.description);
       setFeatures(adData.features);
-      setStartsOn(adData.startson);
-      setEndsOn(adData.endson);
+      // setStartsOn(adData.startson);
+      // setEndsOn(adData.endson);
+      setStartsOn(adData.startson ? adData.startson.split("T")[0] : "");
+      setEndsOn(adData.endson ? adData.endson.split("T")[0] : "");
       setCategoryId(adData.categoryid);
       setCityAreaId(adData.cityid._id);
-      setTypeId(adData.typeid);
+      setTypeId(adData.typeid._id);
     }
   }, [adData]);
 
@@ -62,6 +73,11 @@ const EditAdModal = ({ show, handleClose, adId, adData }) => {
     fetchData();
   }, []);
 
+  const { data } = useSelector((state) => state.Login);
+  // console.log("Login State Fetched : ", data);
+  const token = data?.token;
+  // console.log("Token Extracted : ", token);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const updatedData = new FormData();
@@ -72,10 +88,10 @@ const EditAdModal = ({ show, handleClose, adId, adData }) => {
     updatedData.append("endson", endson);
     updatedData.append("categoryid", categoryid);
     updatedData.append("cityid", cityareaid);
-    updatedData.append("typeid", typeid._id);
+    updatedData.append("typeid", typeid);
     if (image) updatedData.append("image", image);
-
-    dispatch(editAd({"adId": adId, "updatedData" : updatedData}));
+    console.log("Dispatching Edit Ad!");
+    dispatch(editAd({ "adId": adId, "updatedData": updatedData , "token" : token}));
     handleClose();
   };
 
