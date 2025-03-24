@@ -15,24 +15,6 @@ export const postAd = createAsyncThunk('postAd', async (postData) => {
     return await response.json();
 });
 
-// // Edit an existing advertisement
-// export const editAd = createAsyncThunk('editAd', async ({ adId, updatedData , token }) => {
-//     console.log("Inside Dispatch Edit Ad!")
-//     console.log("Recieved Token : " , token);
-//     const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
-//         method: "PUT",
-//         headers: {
-//             "X-Auth-Token": token
-//         },
-//         body: updatedData
-//     });
-
-//     if (!response.ok) {
-//         throw new Error("Failed to Edit Ad!");
-//     }
-//     return await response.json();
-// });
-
 export const editAd = createAsyncThunk('editAd', async ({ adId, updatedData, token }, { rejectWithValue, dispatch }) => {
     try {
         const response = await fetch(`http://localhost:5000/api/v1/advertisement/aid/${adId}`, {
@@ -74,10 +56,6 @@ export const deleteAd = createAsyncThunk('deleteAd', async ({ adId, token }, { r
         return rejectWithValue(errorData.message);
     }
     return await response.json();
-    // if (!response.ok) {
-    //     throw new Error("Failed to Delete Ad!");
-    // }
-    // return adId;
 });
 
 const postAdSlice = createSlice({

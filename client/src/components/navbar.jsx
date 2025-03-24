@@ -11,9 +11,11 @@ import Login from "./login";
 import PostAd from "./postAd";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../slices/login.slice";
+import { Link } from "react-router-dom";
 
 function Navigationbar() {
-  const { loggedIn } = useSelector((state) => state.Login);
+  const { loggedIn, data } = useSelector((state) => state.Login);
+  const user = data?.currentuser
   const dispatch = useDispatch();
   let navigate = useNavigate();
 
@@ -60,8 +62,13 @@ function Navigationbar() {
                   <Button variant="success bg-success" onClick={() => setShowSignUp(true)}>Sign Up</Button>
                 </>
               ) : (
-                // Show Logout Button when logged in
-                <Button className="mx-2 bg-danger" onClick={handleLogout}>Logout</Button>
+                <>
+                  {/* // Show Logout Button when logged in */}
+                  <Button className="mx-2 bg-danger" onClick={handleLogout}>Logout</Button>
+                  <Link to="/userdashboard">
+                    <img style={{ height: "45px", objectFit: "cover" }} src={`http://localhost:5000/public/images/${user.image}`} className="ms-3 rounded-circle" />
+                  </Link>
+                </>
               )}
             </Nav>
           </Navbar.Collapse>
